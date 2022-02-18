@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: menu
+  template:
+    metadata:
+      labels:
+        app: menu
+    spec:
+      containers:
+      - name: menu
+        image: ghcr.io/c-4u/pinned-menu
+        ports:
+        - name: rest
+          containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: menu-secret
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "50m"
+
+      imagePullSecrets:
+          - name: regsecret
