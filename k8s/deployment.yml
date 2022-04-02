@@ -1,20 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: menu
+  name: menu-v1
+  labels:
+    app: menu
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: menu
+      version: v1
   template:
     metadata:
       labels:
         app: menu
+        version: v1
     spec:
       containers:
       - name: menu
         image: ghcr.io/c-4u/pinned-menu
+        imagePullPolicy: IfNotPresent
         ports:
         - name: rest
           containerPort: 8080

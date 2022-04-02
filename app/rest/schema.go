@@ -40,3 +40,13 @@ type Item struct {
 type AddItemTagRequest struct {
 	Tags []string `json:"tags"`
 }
+
+type SearchMenusRequest struct {
+	PageToken string `json:"page_token" query:"page_token"`
+	PageSize  int    `json:"page_size" query:"page_size"`
+}
+
+type SearchMenusResponse struct {
+	Menus         []*Menu `json:"menus"`
+	NextPageToken string  `json:"next_page_token"`
+}

@@ -62,6 +62,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  rest.SearchMenusResponse:
+    properties:
+      menus:
+        items:
+          $ref: '#/definitions/rest.Menu'
+        type: array
+      next_page_token:
+        type: string
+    type: object
 info:
   contact:
     email: contato@coding4u.com.br
@@ -72,6 +81,38 @@ info:
   version: "1.0"
 paths:
   /menus:
+    get:
+      consumes:
+      - application/json
+      description: Router for search menus
+      operationId: searchMenus
+      parameters:
+      - description: page size
+        in: query
+        name: page_size
+        type: integer
+      - description: page token
+        in: query
+        name: page_token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.SearchMenusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+      summary: search menus
+      tags:
+      - Menu
     post:
       consumes:
       - application/json

@@ -11,26 +11,26 @@ import (
 )
 
 type Repository struct {
-	Pg *db.PostgreSQL
-	Kp *kafka.KafkaProducer
+	Orm *db.DbOrm
+	Kp  *kafka.KafkaProducer
 }
 
-func NewRepository(pg *db.PostgreSQL, kp *kafka.KafkaProducer) *Repository {
+func NewRepository(orm *db.DbOrm, kp *kafka.KafkaProducer) *Repository {
 	return &Repository{
-		Pg: pg,
-		Kp: kp,
+		Orm: orm,
+		Kp:  kp,
 	}
 }
 
 func (r *Repository) CreateMenu(ctx context.Context, menu *entity.Menu) error {
-	err := r.Pg.Db.Create(menu).Error
+	err := r.Orm.Db.Create(menu).Error
 	return err
 }
 
 func (r *Repository) FindMenu(ctx context.Context, menuID *string) (*entity.Menu, error) {
 	var e entity.Menu
 
-	r.Pg.Db.First(&e, "id = ?", *menuID)
+	r.Orm.Db.First(&e, "id = ?", *menuID)
 
 	if e.ID == nil {
 		return nil, fmt.Errorf("no menu found")
@@ -40,19 +40,19 @@ func (r *Repository) FindMenu(ctx context.Context, menuID *string) (*entity.Menu
 }
 
 func (r *Repository) SaveMenu(ctx context.Context, menu *entity.Menu) error {
-	err := r.Pg.Db.Save(menu).Error
+	err := r.Orm.Db.Save(menu).Error
 	return err
 }
 
 func (r *Repository) CreateItem(ctx context.Context, item *entity.Item) error {
-	err := r.Pg.Db.Create(item).Error
+	err := r.Orm.Db.Create(item).Error
 	return err
 }
 
 func (r *Repository) FindItem(ctx context.Context, menuID, itemID *string) (*entity.Item, error) {
 	var e entity.Item
 
-	r.Pg.Db.First(&e, "id = ? AND menu_id = ?", *itemID, *menuID)
+	r.Orm.Db.First(&e, "id = ? AND menu_id = ?", *itemID, *menuID)
 
 	if e.ID == nil {
 		return nil, fmt.Errorf("no item found")
@@ -62,8 +62,29 @@ func (r *Repository) FindItem(ctx context.Context, menuID, itemID *string) (*ent
 }
 
 func (r *Repository) SaveItem(ctx context.Context, item *entity.Item) error {
-	err := r.Pg.Db.Save(item).Error
+	err := r.Orm.Db.Save(item).Error
 	return err
+}
+
+func (r *Repository) SearchMenus(ctx context.Context, searchMenu *entity.SearchMenus) ([]*entity.Menu, *string, error) {
+	var e []*entity.Menu
+
+	q := r.Orm.Db
+	if *searchMenu.PageToken != "" {
+		q = q.Where("token < ?", *searchMenu.PageToken)
+	}
+	err := q.Order("token DESC").
+		Limit(*searchMenu.PageSize).
+		Find(&e).Error
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(e) < *searchMenu.PageSize {
+		return e, nil, nil
+	}
+
+	return e, e[len(e)-1].Token, nil
 }
 
 func (r *Repository) PublishEvent(ctx context.Context, topic, msg, key *string) error {

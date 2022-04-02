@@ -82,3 +82,22 @@ func (s *Service) AddItemTags(ctx context.Context, menuID, itemID *string, tag *
 
 	return nil
 }
+
+func (s *Service) SearchMenus(ctx context.Context, pageToken *string, pageSize *int) ([]*entity.Menu, *string, error) {
+	pagination, err := entity.NewPagination(pageToken, pageSize)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	searchMenus, err := entity.NewSearchMenus(pagination)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	menus, nextPageToken, err := s.Repo.SearchMenus(ctx, searchMenus)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return menus, nextPageToken, nil
+}

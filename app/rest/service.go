@@ -184,3 +184,34 @@ func (t *RestService) AddItemTag(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: "successful request"})
 }
+
+// SearchMenus godoc
+// @Summary search menus
+// @ID searchMenus
+// @Tags Menu
+// @Description Router for search menus
+// @Accept json
+// @Produce json
+// @Param page_size query int false "page size"
+// @Param page_token query string false "page token"
+// @Success 200 {object} SearchMenusResponse
+// @Failure 400 {object} HTTPResponse
+// @Failure 403 {object} HTTPResponse
+// @Router /menus [get]
+func (t *RestService) SearchMenus(c *fiber.Ctx) error {
+	var req SearchMenusRequest
+
+	if err := c.QueryParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	menus, nextPageToken, err := t.Service.SearchMenus(c.Context(), &req.PageToken, &req.PageSize)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"menus":           menus,
+		"next_page_token": nextPageToken,
+	})
+}
