@@ -275,7 +275,7 @@ var doc = `{
             }
         },
         "/menus/{menu_id}/items/{item_id}/tag": {
-            "put": {
+            "post": {
                 "description": "Router for add a item tag",
                 "consumes": [
                     "application/json"
@@ -340,11 +340,8 @@ var doc = `{
         "rest.AddItemTagRequest": {
             "type": "object",
             "properties": {
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "tag": {
+                    "type": "string"
                 }
             }
         },
@@ -393,6 +390,9 @@ var doc = `{
         "rest.Item": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -405,11 +405,20 @@ var doc = `{
                 "id": {
                     "type": "string"
                 },
+                "menu_id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
                 "price": {
                     "type": "number"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/rest.Tag"
+                    }
                 },
                 "updated_at": {
                     "type": "string"
@@ -443,6 +452,14 @@ var doc = `{
                     }
                 },
                 "next_page_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.Tag": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

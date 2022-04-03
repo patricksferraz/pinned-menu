@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-gormigrate/gormigrate/v2"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -29,7 +28,7 @@ func (m *MigrateOrm) load() {
 			ID: "202203301940",
 			Migrate: func(db *gorm.DB) error {
 				type Base struct {
-					ID        string    `gorm:"type:uuid;primaryKey"`
+					ID        string    `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 					CreatedAt time.Time `gorm:"column:created_at;autoUpdateTime"`
 					UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime"`
 				}
@@ -40,19 +39,26 @@ func (m *MigrateOrm) load() {
 				}
 				type Item struct {
 					Base
-					Code        *int           `gorm:"column:code;auto_increment;not_null"`
-					Name        *string        `gorm:"column:name;not null"`
-					Description *string        `gorm:"column:description;type:varchar(500)"`
-					Price       *float64       `gorm:"column:price;not null"`
-					Discount    *float64       `gorm:"column:discount"`
-					Tags        pq.StringArray `gorm:"column:tags;type:text[]"`
-					MenuID      *string        `gorm:"column:menu_id;type:uuid;not null"`
+					Code        *int     `gorm:"column:code;autoIncrement;not null"`
+					Name        *string  `gorm:"column:name;not null"`
+					Description *string  `gorm:"column:description;type:varchar(500)"`
+					Price       *float64 `gorm:"column:price;not null"`
+					Discount    *float64 `gorm:"column:discount"`
+					MenuID      *string  `gorm:"column:menu_id;type:uuid;not null"`
+				}
+				type Tag struct {
+					Base
+					Name *string `gorm:"column:name;type:varchar(255);unique"`
+				}
+				type ItemsTag struct {
+					ItemID string `gorm:"column:item_id;type:uuid;not null;unique_index:items_tags;primaryKey"`
+					TagID  string `gorm:"column:tag_id;type:uuid;not null;unique_index:items_tags;primaryKey"`
 				}
 
-				return db.AutoMigrate(&Menu{}, &Item{})
+				return db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";").AutoMigrate(&Menu{}, &Item{}, &Tag{}, &ItemsTag{})
 			},
 			Rollback: func(db *gorm.DB) error {
-				return db.Migrator().DropTable("menus", "items")
+				return db.Exec("DROP EXTENSION IF EXISTS \"uuid-ossp\";").Migrator().DropTable("menus", "items", "tags", "items_tags")
 			},
 		},
 	})

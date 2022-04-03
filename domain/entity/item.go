@@ -5,7 +5,6 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/c-4u/pinned-menu/utils"
-	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -15,14 +14,14 @@ func init() {
 
 type Item struct {
 	Base        `json:",inline" valid:"-"`
-	Code        *int           `json:"code" gorm:"column:code;auto_increment;not_null" valid:"-"`
-	Name        *string        `json:"name" gorm:"column:name;not null" valid:"required"`
-	Description *string        `json:"description,omitempty" gorm:"column:description;type:varchar(500)" valid:"-"`
-	Price       *float64       `json:"price" gorm:"column:price;not null" valid:"required"`
-	Discount    *float64       `json:"discount,omitempty" gorm:"column:discount" valid:"-"`
-	Tags        pq.StringArray `json:"tags,omitempty" gorm:"column:tags;type:text[]" valid:"-"`
-	MenuID      *string        `json:"menu_id" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
-	Menu        *Menu          `json:"-" valid:"-"`
+	Code        *int     `json:"code" gorm:"column:code;autoIncrement;not null" valid:"-"`
+	Name        *string  `json:"name" gorm:"column:name;not null" valid:"required"`
+	Description *string  `json:"description,omitempty" gorm:"column:description;type:varchar(500)" valid:"-"`
+	Price       *float64 `json:"price" gorm:"column:price;not null" valid:"required"`
+	Discount    *float64 `json:"discount,omitempty" gorm:"column:discount" valid:"-"`
+	MenuID      *string  `json:"menu_id" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
+	Menu        *Menu    `json:"-" valid:"-"`
+	Tags        []*Tag   `json:"tags" gorm:"many2many:items_tags" valid:"-"`
 }
 
 func NewItem(name, description *string, price, discount *float64, menu *Menu) (*Item, error) {
@@ -50,8 +49,8 @@ func (e *Item) IsValid() error {
 	return err
 }
 
-func (e *Item) AddTags(tag *[]string) error {
-	e.Tags = *tag
+func (e *Item) AddTags(tag ...*Tag) error {
+	e.Tags = append(e.Tags, tag...)
 	e.UpdatedAt = utils.PTime(time.Now())
 	err := e.IsValid()
 	return err

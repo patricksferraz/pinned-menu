@@ -259,7 +259,7 @@
             }
         },
         "/menus/{menu_id}/items/{item_id}/tag": {
-            "put": {
+            "post": {
                 "description": "Router for add a item tag",
                 "consumes": [
                     "application/json"
@@ -324,11 +324,8 @@
         "rest.AddItemTagRequest": {
             "type": "object",
             "properties": {
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "tag": {
+                    "type": "string"
                 }
             }
         },
@@ -377,6 +374,9 @@
         "rest.Item": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -389,11 +389,20 @@
                 "id": {
                     "type": "string"
                 },
+                "menu_id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
                 "price": {
                     "type": "number"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/rest.Tag"
+                    }
                 },
                 "updated_at": {
                     "type": "string"
@@ -427,6 +436,14 @@
                     }
                 },
                 "next_page_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "rest.Tag": {
+            "type": "object",
+            "properties": {
+                "name": {
                     "type": "string"
                 }
             }

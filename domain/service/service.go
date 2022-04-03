@@ -5,6 +5,8 @@ import (
 
 	"github.com/c-4u/pinned-menu/domain/entity"
 	"github.com/c-4u/pinned-menu/domain/repo"
+	"github.com/c-4u/pinned-menu/infra/client/kafka/topic"
+	"github.com/c-4u/pinned-menu/utils"
 )
 
 type Service struct {
@@ -54,6 +56,22 @@ func (s *Service) CreateItem(ctx context.Context, menuID, name, description *str
 		return nil, err
 	}
 
+	// TODO: adds retry
+	event, err := entity.NewEvent(item)
+	if err != nil {
+		return nil, err
+	}
+
+	eMsg, err := event.ToJson()
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.Repo.PublishEvent(ctx, utils.PString(topic.NEW_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	return item.ID, nil
 }
 
@@ -66,8 +84,13 @@ func (s *Service) FindItem(ctx context.Context, menuID, itemID *string) (*entity
 	return item, nil
 }
 
-func (s *Service) AddItemTags(ctx context.Context, menuID, itemID *string, tag *[]string) error {
+func (s *Service) AddItemTags(ctx context.Context, menuID, itemID, tagName *string) error {
 	item, err := s.Repo.FindItem(ctx, menuID, itemID)
+	if err != nil {
+		return err
+	}
+
+	tag, err := s.Repo.FindTagByName(ctx, tagName)
 	if err != nil {
 		return err
 	}

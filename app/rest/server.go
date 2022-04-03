@@ -49,7 +49,7 @@ func StartRestServer(orm *db.DbOrm, kp *kafka.KafkaProducer, port int) {
 		item := menu.Group("/:menu_id/items")
 		item.Post("", restService.CreateItem)
 		item.Get("/:item_id", restService.FindItem)
-		item.Put("/:item_id/tag", restService.AddItemTag)
+		item.Post("/:item_id/tag", restService.AddItemTag)
 	}
 
 	addr := fmt.Sprintf("0.0.0.0:%d", port)

@@ -16,5 +16,7 @@ type RepoInterface interface {
 	FindItem(ctx context.Context, menuID, itemID *string) (*entity.Item, error)
 	SaveItem(ctx context.Context, item *entity.Item) error
 
+	FindTagByName(ctx context.Context, tagName *string) (*entity.Tag, error)
+
 	PublishEvent(ctx context.Context, topic, msg, key *string) error
 }

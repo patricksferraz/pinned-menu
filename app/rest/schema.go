@@ -32,13 +32,20 @@ type CreateItemRequest struct {
 	Discount    float64 `json:"discount"`
 }
 
+type Tag struct {
+	Name string `json:"name"`
+}
+
 type Item struct {
 	Base              `json:",inline"`
 	CreateItemRequest `json:",inline"`
+	Code              int    `json:"code"`
+	MenuID            string `json:"menu_id"`
+	Tags              []Tag  `json:"tags"`
 }
 
 type AddItemTagRequest struct {
-	Tags []string `json:"tags"`
+	Tag string `json:"tag"`
 }
 
 type SearchMenusRequest struct {
@@ -47,6 +54,6 @@ type SearchMenusRequest struct {
 }
 
 type SearchMenusResponse struct {
-	Menus         []*Menu `json:"menus"`
-	NextPageToken string  `json:"next_page_token"`
+	Menus         []Menu `json:"menus"`
+	NextPageToken string `json:"next_page_token"`
 }

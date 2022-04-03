@@ -155,7 +155,7 @@ func (t *RestService) FindItem(c *fiber.Ctx) error {
 // @Success 200 {object} HTTPResponse
 // @Failure 400 {object} HTTPResponse
 // @Failure 403 {object} HTTPResponse
-// @Router /menus/{menu_id}/items/{item_id}/tag [put]
+// @Router /menus/{menu_id}/items/{item_id}/tag [post]
 func (t *RestService) AddItemTag(c *fiber.Ctx) error {
 	var req AddItemTagRequest
 
@@ -177,7 +177,7 @@ func (t *RestService) AddItemTag(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: err.Error()})
 	}
 
-	err := t.Service.AddItemTags(c.Context(), &menuID, &itemID, &req.Tags)
+	err := t.Service.AddItemTags(c.Context(), &menuID, &itemID, &req.Tag)
 	if err != nil {
 		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
 	}
