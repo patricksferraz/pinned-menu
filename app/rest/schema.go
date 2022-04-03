@@ -67,3 +67,7 @@ type SearchItemsResponse struct {
 	Items         []Item `json:"items"`
 	NextPageToken string `json:"next_page_token"`
 }
+
+type DeleteItemTagRequest struct {
+	Tag string `json:"tag"`
+}

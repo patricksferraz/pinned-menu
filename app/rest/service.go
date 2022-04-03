@@ -254,3 +254,46 @@ func (t *RestService) SearchItems(c *fiber.Ctx) error {
 		"next_page_token": nextPageToken,
 	})
 }
+
+// DeleteItemTag godoc
+// @Summary delete a item tag
+// @ID deleteItemTag
+// @Tags Item
+// @Description Router for delete a item tag
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Param item_id path string true "Item ID"
+// @Param body body DeleteItemTagRequest true "JSON body for delete a item tag"
+// @Success 200 {object} HTTPResponse
+// @Failure 400 {object} HTTPResponse
+// @Failure 403 {object} HTTPResponse
+// @Router /menus/{menu_id}/items/{item_id}/tag [delete]
+func (t *RestService) DeleteItemTag(c *fiber.Ctx) error {
+	var req DeleteItemTagRequest
+
+	menuID := c.Params("menu_id")
+	if !govalidator.IsUUIDv4(menuID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "menu_id is not a valid uuid",
+		})
+	}
+
+	itemID := c.Params("item_id")
+	if !govalidator.IsUUIDv4(itemID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "item_id is not a valid uuid",
+		})
+	}
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	err := t.Service.DeleteItemTagByName(c.Context(), &menuID, &itemID, &req.Tag)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: "successful request"})
+}

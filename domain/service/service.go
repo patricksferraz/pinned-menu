@@ -143,3 +143,21 @@ func (s *Service) SearchItems(ctx context.Context, menuID, pageToken *string, pa
 
 	return items, nextPageToken, nil
 }
+
+func (s *Service) DeleteItemTagByName(ctx context.Context, menuID, itemID, tagName *string) error {
+	item, err := s.Repo.FindItem(ctx, menuID, itemID)
+	if err != nil {
+		return err
+	}
+
+	tag, err := s.Repo.FindTagByName(ctx, tagName)
+	if err != nil {
+		return err
+	}
+
+	if err = s.Repo.DeleteItemTag(ctx, item, tag); err != nil {
+		return err
+	}
+
+	return nil
+}

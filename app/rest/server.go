@@ -51,6 +51,7 @@ func StartRestServer(orm *db.DbOrm, kp *kafka.KafkaProducer, port int) {
 		item.Post("", restService.CreateItem)
 		item.Get("/:item_id", restService.FindItem)
 		item.Post("/:item_id/tag", restService.AddItemTag)
+		item.Delete("/:item_id/tag", restService.DeleteItemTag)
 	}
 
 	addr := fmt.Sprintf("0.0.0.0:%d", port)

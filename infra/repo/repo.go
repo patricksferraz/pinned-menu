@@ -132,3 +132,8 @@ func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.Search
 
 	return e, e[len(e)-1].Token, nil
 }
+
+func (r *Repository) DeleteItemTag(ctx context.Context, item *entity.Item, tag *entity.Tag) error {
+	err := r.Orm.Db.Model(item).Association("Tags").Delete(tag)
+	return err
+}

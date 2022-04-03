@@ -21,6 +21,11 @@ definitions:
       name:
         type: string
     type: object
+  rest.DeleteItemTagRequest:
+    properties:
+      tag:
+        type: string
+    type: object
   rest.HTTPResponse:
     properties:
       msg:
@@ -302,6 +307,46 @@ paths:
       tags:
       - Item
   /menus/{menu_id}/items/{item_id}/tag:
+    delete:
+      consumes:
+      - application/json
+      description: Router for delete a item tag
+      operationId: deleteItemTag
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: string
+      - description: JSON body for delete a item tag
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rest.DeleteItemTagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+      summary: delete a item tag
+      tags:
+      - Item
     post:
       consumes:
       - application/json
