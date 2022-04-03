@@ -47,6 +47,7 @@ func StartRestServer(orm *db.DbOrm, kp *kafka.KafkaProducer, port int) {
 		menu.Get("/:menu_id", restService.FindMenu)
 
 		item := menu.Group("/:menu_id/items")
+		item.Get("", restService.SearchItems)
 		item.Post("", restService.CreateItem)
 		item.Get("/:item_id", restService.FindItem)
 		item.Post("/:item_id/tag", restService.AddItemTag)

@@ -6,6 +6,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/c-4u/pinned-menu/utils"
 	uuid "github.com/satori/go.uuid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func init() {
@@ -19,17 +20,20 @@ type Item struct {
 	Description *string  `json:"description,omitempty" gorm:"column:description;type:varchar(500)" valid:"-"`
 	Price       *float64 `json:"price" gorm:"column:price;not null" valid:"required"`
 	Discount    *float64 `json:"discount,omitempty" gorm:"column:discount" valid:"-"`
+	Token       *string  `json:"-" gorm:"column:token;type:varchar(25);not null" valid:"-"`
 	MenuID      *string  `json:"menu_id" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
 	Menu        *Menu    `json:"-" valid:"-"`
-	Tags        []*Tag   `json:"tags" gorm:"many2many:items_tags" valid:"-"`
+	Tags        []*Tag   `json:"tags,omitempty" gorm:"many2many:items_tags" valid:"-"`
 }
 
 func NewItem(name, description *string, price, discount *float64, menu *Menu) (*Item, error) {
+	token := primitive.NewObjectID().Hex()
 	e := Item{
 		Name:        name,
 		Price:       price,
 		Discount:    discount,
 		Description: description,
+		Token:       &token,
 		MenuID:      menu.ID,
 		Menu:        menu,
 	}
@@ -54,4 +58,24 @@ func (e *Item) AddTags(tag ...*Tag) error {
 	e.UpdatedAt = utils.PTime(time.Now())
 	err := e.IsValid()
 	return err
+}
+
+type SearchItems struct {
+	Pagination `json:",inline" valid:"-"`
+	MenuID     *string `json:"menu_id" valid:"uuid"`
+}
+
+func NewSearchItems(menuID *string, pagination *Pagination) (*SearchItems, error) {
+	e := SearchItems{
+		MenuID: menuID,
+	}
+	e.PageToken = pagination.PageToken
+	e.PageSize = pagination.PageSize
+
+	err := e.IsValid()
+	if err != nil {
+		return nil, err
+	}
+
+	return &e, nil
 }

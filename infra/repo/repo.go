@@ -111,3 +111,24 @@ func (r *Repository) FindTagByName(ctx context.Context, tagName *string) (*entit
 
 	return &e, nil
 }
+
+func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.SearchItems) ([]*entity.Item, *string, error) {
+	var e []*entity.Item
+
+	q := r.Orm.Db.Preload("Tags")
+	if *searchItems.PageToken != "" {
+		q = q.Where("token < ?", *searchItems.PageToken)
+	}
+	err := q.Order("token DESC").
+		Limit(*searchItems.PageSize).
+		Find(&e).Error
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(e) < *searchItems.PageSize {
+		return e, nil, nil
+	}
+
+	return e, e[len(e)-1].Token, nil
+}

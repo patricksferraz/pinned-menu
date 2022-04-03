@@ -15,6 +15,7 @@ type RepoInterface interface {
 	CreateItem(ctx context.Context, item *entity.Item) error
 	FindItem(ctx context.Context, menuID, itemID *string) (*entity.Item, error)
 	SaveItem(ctx context.Context, item *entity.Item) error
+	SearchItems(ctx context.Context, searchItems *entity.SearchItems) ([]*entity.Item, *string, error)
 
 	FindTagByName(ctx context.Context, tagName *string) (*entity.Tag, error)
 

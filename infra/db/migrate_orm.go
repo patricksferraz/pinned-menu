@@ -44,6 +44,7 @@ func (m *MigrateOrm) load() {
 					Description *string  `gorm:"column:description;type:varchar(500)"`
 					Price       *float64 `gorm:"column:price;not null"`
 					Discount    *float64 `gorm:"column:discount"`
+					Token       *string  `gorm:"column:token;type:varchar(25);not null"`
 					MenuID      *string  `gorm:"column:menu_id;type:uuid;not null"`
 				}
 				type Tag struct {

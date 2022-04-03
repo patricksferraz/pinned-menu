@@ -215,3 +215,42 @@ func (t *RestService) SearchMenus(c *fiber.Ctx) error {
 		"next_page_token": nextPageToken,
 	})
 }
+
+// SearchItems godoc
+// @Summary search items
+// @ID searchItems
+// @Tags Item
+// @Description Router for search items
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Param page_size query int false "page size"
+// @Param page_token query string false "page token"
+// @Success 200 {object} SearchItemsResponse
+// @Failure 400 {object} HTTPResponse
+// @Failure 403 {object} HTTPResponse
+// @Router /menus/{menu_id}/items [get]
+func (t *RestService) SearchItems(c *fiber.Ctx) error {
+	var req SearchItemsRequest
+
+	menuID := c.Params("menu_id")
+	if !govalidator.IsUUIDv4(menuID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "menu_id is not a valid uuid",
+		})
+	}
+
+	if err := c.QueryParser(&req); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	items, nextPageToken, err := t.Service.SearchItems(c.Context(), &menuID, &req.PageToken, &req.PageSize)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"items":           items,
+		"next_page_token": nextPageToken,
+	})
+}

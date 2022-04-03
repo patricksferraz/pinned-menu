@@ -57,3 +57,13 @@ type SearchMenusResponse struct {
 	Menus         []Menu `json:"menus"`
 	NextPageToken string `json:"next_page_token"`
 }
+
+type SearchItemsRequest struct {
+	PageToken string `json:"page_token" query:"page_token"`
+	PageSize  int    `json:"page_size" query:"page_size"`
+}
+
+type SearchItemsResponse struct {
+	Items         []Item `json:"items"`
+	NextPageToken string `json:"next_page_token"`
+}

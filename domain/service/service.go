@@ -124,3 +124,22 @@ func (s *Service) SearchMenus(ctx context.Context, pageToken *string, pageSize *
 
 	return menus, nextPageToken, nil
 }
+
+func (s *Service) SearchItems(ctx context.Context, menuID, pageToken *string, pageSize *int) ([]*entity.Item, *string, error) {
+	pagination, err := entity.NewPagination(pageToken, pageSize)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	searchItems, err := entity.NewSearchItems(menuID, pagination)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	items, nextPageToken, err := s.Repo.SearchItems(ctx, searchItems)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return items, nextPageToken, nil
+}

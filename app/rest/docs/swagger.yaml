@@ -68,6 +68,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  rest.SearchItemsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/rest.Item'
+        type: array
+      next_page_token:
+        type: string
+    type: object
   rest.SearchMenusResponse:
     properties:
       menus:
@@ -185,6 +194,43 @@ paths:
       tags:
       - Menu
   /menus/{menu_id}/items:
+    get:
+      consumes:
+      - application/json
+      description: Router for search items
+      operationId: searchItems
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      - description: page size
+        in: query
+        name: page_size
+        type: integer
+      - description: page token
+        in: query
+        name: page_token
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.SearchItemsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+      summary: search items
+      tags:
+      - Item
     post:
       consumes:
       - application/json
