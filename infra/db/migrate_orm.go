@@ -41,6 +41,7 @@ func (m *MigrateOrm) load() {
 					Base
 					Code        *int     `gorm:"column:code;autoIncrement;not null"`
 					Name        *string  `gorm:"column:name;not null"`
+					Available   *bool    `gorm:"column:available;not null"`
 					Description *string  `gorm:"column:description;type:varchar(500)"`
 					Price       *float64 `gorm:"column:price;not null"`
 					Discount    *float64 `gorm:"column:discount"`

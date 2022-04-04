@@ -306,6 +306,41 @@ paths:
       summary: find a item
       tags:
       - Item
+  /menus/{menu_id}/items/{item_id}/available:
+    post:
+      consumes:
+      - application/json
+      description: Router for set available
+      operationId: SetItemAvailable
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+      summary: set item available
+      tags:
+      - Item
   /menus/{menu_id}/items/{item_id}/tag:
     delete:
       consumes:
@@ -385,6 +420,41 @@ paths:
           schema:
             $ref: '#/definitions/rest.HTTPResponse'
       summary: add a item tag
+      tags:
+      - Item
+  /menus/{menu_id}/items/{item_id}/unavailable:
+    post:
+      consumes:
+      - application/json
+      description: Router for set unavailable
+      operationId: SetItemUnavailable
+      parameters:
+      - description: Menu ID
+        in: path
+        name: menu_id
+        required: true
+        type: string
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/rest.HTTPResponse'
+      summary: set item unavailable
       tags:
       - Item
 securityDefinitions:

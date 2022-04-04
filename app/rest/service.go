@@ -297,3 +297,75 @@ func (t *RestService) DeleteItemTag(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: "successful request"})
 }
+
+// SetItemAvailable godoc
+// @Summary set item available
+// @ID SetItemAvailable
+// @Tags Item
+// @Description Router for set available
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Param item_id path string true "Item ID"
+// @Success 200 {object} HTTPResponse
+// @Failure 400 {object} HTTPResponse
+// @Failure 403 {object} HTTPResponse
+// @Router /menus/{menu_id}/items/{item_id}/available [post]
+func (t *RestService) SetItemAvailable(c *fiber.Ctx) error {
+	menuID := c.Params("menu_id")
+	if !govalidator.IsUUIDv4(menuID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "menu_id is not a valid uuid",
+		})
+	}
+
+	itemID := c.Params("item_id")
+	if !govalidator.IsUUIDv4(itemID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "item_id is not a valid uuid",
+		})
+	}
+
+	err := t.Service.SetItemAvailable(c.Context(), &menuID, &itemID)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: "successful request"})
+}
+
+// SetItemUnavailable godoc
+// @Summary set item unavailable
+// @ID SetItemUnavailable
+// @Tags Item
+// @Description Router for set unavailable
+// @Accept json
+// @Produce json
+// @Param menu_id path string true "Menu ID"
+// @Param item_id path string true "Item ID"
+// @Success 200 {object} HTTPResponse
+// @Failure 400 {object} HTTPResponse
+// @Failure 403 {object} HTTPResponse
+// @Router /menus/{menu_id}/items/{item_id}/unavailable [post]
+func (t *RestService) SetItemUnavailable(c *fiber.Ctx) error {
+	menuID := c.Params("menu_id")
+	if !govalidator.IsUUIDv4(menuID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "menu_id is not a valid uuid",
+		})
+	}
+
+	itemID := c.Params("item_id")
+	if !govalidator.IsUUIDv4(itemID) {
+		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
+			Msg: "item_id is not a valid uuid",
+		})
+	}
+
+	err := t.Service.SetItemUnavailable(c.Context(), &menuID, &itemID)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: "successful request"})
+}

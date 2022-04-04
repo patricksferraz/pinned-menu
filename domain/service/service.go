@@ -62,7 +62,7 @@ func (s *Service) CreateItem(ctx context.Context, menuID, name, description *str
 		return nil, err
 	}
 
-	eMsg, err := event.ToJson()
+	eMsg, err := event.ToJson(topic.NEW_MENU_ITEM)
 	if err != nil {
 		return nil, err
 	}
@@ -156,6 +156,72 @@ func (s *Service) DeleteItemTagByName(ctx context.Context, menuID, itemID, tagNa
 	}
 
 	if err = s.Repo.DeleteItemTag(ctx, item, tag); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) SetItemUnavailable(ctx context.Context, menuID, itemID *string) error {
+	item, err := s.Repo.FindItem(ctx, menuID, itemID)
+	if err != nil {
+		return err
+	}
+
+	if err = item.SetUnavailable(); err != nil {
+		return err
+	}
+
+	if err = s.Repo.SaveItem(ctx, item); err != nil {
+		return err
+	}
+
+	// TODO: adds retry
+	event, err := entity.NewEvent(item)
+	if err != nil {
+		return err
+	}
+
+	eMsg, err := event.ToJson(topic.AVAILABLE_MENU_ITEM)
+	if err != nil {
+		return err
+	}
+
+	err = s.Repo.PublishEvent(ctx, utils.PString(topic.AVAILABLE_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) SetItemAvailable(ctx context.Context, menuID, itemID *string) error {
+	item, err := s.Repo.FindItem(ctx, menuID, itemID)
+	if err != nil {
+		return err
+	}
+
+	if err = item.SetAvailable(); err != nil {
+		return err
+	}
+
+	if err = s.Repo.SaveItem(ctx, item); err != nil {
+		return err
+	}
+
+	// TODO: adds retry
+	event, err := entity.NewEvent(item)
+	if err != nil {
+		return err
+	}
+
+	eMsg, err := event.ToJson(topic.AVAILABLE_MENU_ITEM)
+	if err != nil {
+		return err
+	}
+
+	err = s.Repo.PublishEvent(ctx, utils.PString(topic.AVAILABLE_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
+	if err != nil {
 		return err
 	}
 

@@ -14,16 +14,17 @@ func init() {
 }
 
 type Item struct {
-	Base        `json:",inline" valid:"-"`
-	Code        *int     `json:"code" gorm:"column:code;autoIncrement;not null" valid:"-"`
-	Name        *string  `json:"name" gorm:"column:name;not null" valid:"required"`
-	Description *string  `json:"description,omitempty" gorm:"column:description;type:varchar(500)" valid:"-"`
-	Price       *float64 `json:"price" gorm:"column:price;not null" valid:"required"`
-	Discount    *float64 `json:"discount,omitempty" gorm:"column:discount" valid:"-"`
+	Base        `json:",inline" groups:"NEW_MENU_ITEM,AVAILABLE_MENU_ITEM" valid:"-"`
+	Code        *int     `json:"code" groups:"NEW_MENU_ITEM" gorm:"column:code;autoIncrement;not null" valid:"-"`
+	Name        *string  `json:"name" groups:"NEW_MENU_ITEM" gorm:"column:name;not null" valid:"required"`
+	Description *string  `json:"description,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:description;type:varchar(500)" valid:"-"`
+	Available   *bool    `json:"available" groups:"NEW_MENU_ITEM,AVAILABLE_MENU_ITEM" gorm:"column:available;not null" valid:"-"`
+	Price       *float64 `json:"price" groups:"NEW_MENU_ITEM" gorm:"column:price;not null" valid:"required"`
+	Discount    *float64 `json:"discount,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:discount" valid:"-"`
 	Token       *string  `json:"-" gorm:"column:token;type:varchar(25);not null" valid:"-"`
-	MenuID      *string  `json:"menu_id" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
+	MenuID      *string  `json:"menu_id" groups:"NEW_MENU_ITEM" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
 	Menu        *Menu    `json:"-" valid:"-"`
-	Tags        []*Tag   `json:"tags,omitempty" gorm:"many2many:items_tags" valid:"-"`
+	Tags        []*Tag   `json:"tags,omitempty" groups:"NEW_MENU_ITEM" gorm:"many2many:items_tags" valid:"-"`
 }
 
 func NewItem(name, description *string, price, discount *float64, menu *Menu) (*Item, error) {
@@ -33,6 +34,7 @@ func NewItem(name, description *string, price, discount *float64, menu *Menu) (*
 		Price:       price,
 		Discount:    discount,
 		Description: description,
+		Available:   utils.PBool(true),
 		Token:       &token,
 		MenuID:      menu.ID,
 		Menu:        menu,
@@ -55,6 +57,20 @@ func (e *Item) IsValid() error {
 
 func (e *Item) AddTags(tag ...*Tag) error {
 	e.Tags = append(e.Tags, tag...)
+	e.UpdatedAt = utils.PTime(time.Now())
+	err := e.IsValid()
+	return err
+}
+
+func (e *Item) SetUnavailable() error {
+	e.Available = utils.PBool(false)
+	e.UpdatedAt = utils.PTime(time.Now())
+	err := e.IsValid()
+	return err
+}
+
+func (e *Item) SetAvailable() error {
+	e.Available = utils.PBool(true)
 	e.UpdatedAt = utils.PTime(time.Now())
 	err := e.IsValid()
 	return err
