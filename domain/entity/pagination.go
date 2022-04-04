@@ -15,7 +15,7 @@ type Pagination struct {
 }
 
 func NewPagination(pageToken *string, pageSize *int) (*Pagination, error) {
-	if *pageSize == 0 {
+	if pageSize == nil {
 		pageSize = utils.PInt(10)
 	}
 

@@ -11,20 +11,21 @@ import (
 
 func init() {
 	govalidator.SetFieldsRequiredByDefault(true)
+	govalidator.SetNilPtrAllowedByRequired(true)
 }
 
 type Item struct {
-	Base        `json:",inline" groups:"NEW_MENU_ITEM,AVAILABLE_MENU_ITEM" valid:"-"`
-	Code        *int     `json:"code" groups:"NEW_MENU_ITEM" gorm:"column:code;autoIncrement;not null" valid:"-"`
-	Name        *string  `json:"name" groups:"NEW_MENU_ITEM" gorm:"column:name;not null" valid:"required"`
-	Description *string  `json:"description,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:description;type:varchar(500)" valid:"-"`
-	Available   *bool    `json:"available" groups:"NEW_MENU_ITEM,AVAILABLE_MENU_ITEM" gorm:"column:available;not null" valid:"-"`
-	Price       *float64 `json:"price" groups:"NEW_MENU_ITEM" gorm:"column:price;not null" valid:"required"`
-	Discount    *float64 `json:"discount,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:discount" valid:"-"`
+	Base        `json:",inline" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" valid:"-"`
+	Code        *int     `json:"code,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:code;autoIncrement;not null" valid:"-"`
+	Name        *string  `json:"name,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:name;not null" valid:"required"`
+	Description *string  `json:"description,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:description;type:varchar(500)" valid:"-"`
+	Available   *bool    `json:"available" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:available;not null" valid:"-"`
+	Price       *float64 `json:"price,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:price;not null" valid:"required"`
+	Discount    *float64 `json:"discount,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:discount" valid:"-"`
 	Token       *string  `json:"-" gorm:"column:token;type:varchar(25);not null" valid:"-"`
-	MenuID      *string  `json:"menu_id" groups:"NEW_MENU_ITEM" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
+	MenuID      *string  `json:"menu_id" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
 	Menu        *Menu    `json:"-" valid:"-"`
-	Tags        []*Tag   `json:"tags,omitempty" groups:"NEW_MENU_ITEM" gorm:"many2many:items_tags" valid:"-"`
+	Tags        []*Tag   `json:"tags,omitempty" gorm:"many2many:items_tags" valid:"-"`
 }
 
 func NewItem(name, description *string, price, discount *float64, menu *Menu) (*Item, error) {
@@ -62,18 +63,34 @@ func (e *Item) AddTags(tag ...*Tag) error {
 	return err
 }
 
-func (e *Item) SetUnavailable() error {
-	e.Available = utils.PBool(false)
+func (e *Item) SetAvailable(available *bool) *Item {
+	e.Available = available
 	e.UpdatedAt = utils.PTime(time.Now())
-	err := e.IsValid()
-	return err
+	return e
 }
 
-func (e *Item) SetAvailable() error {
-	e.Available = utils.PBool(true)
+func (e *Item) SetName(name *string) *Item {
+	e.Name = name
 	e.UpdatedAt = utils.PTime(time.Now())
-	err := e.IsValid()
-	return err
+	return e
+}
+
+func (e *Item) SetDescription(description *string) *Item {
+	e.Description = description
+	e.UpdatedAt = utils.PTime(time.Now())
+	return e
+}
+
+func (e *Item) SetPrice(price *float64) *Item {
+	e.Price = price
+	e.UpdatedAt = utils.PTime(time.Now())
+	return e
+}
+
+func (e *Item) SetDiscount(discount *float64) *Item {
+	e.Discount = discount
+	e.UpdatedAt = utils.PTime(time.Now())
+	return e
 }
 
 type SearchItems struct {

@@ -70,7 +70,7 @@ func (r *Repository) SearchMenus(ctx context.Context, searchMenu *entity.SearchM
 	var e []*entity.Menu
 
 	q := r.Orm.Db
-	if *searchMenu.PageToken != "" {
+	if searchMenu.PageToken != nil {
 		q = q.Where("token < ?", *searchMenu.PageToken)
 	}
 	err := q.Order("token DESC").
@@ -116,7 +116,7 @@ func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.Search
 	var e []*entity.Item
 
 	q := r.Orm.Db.Preload("Tags")
-	if *searchItems.PageToken != "" {
+	if searchItems.PageToken != nil {
 		q = q.Where("token < ?", *searchItems.PageToken)
 	}
 	err := q.Order("token DESC").
@@ -135,5 +135,10 @@ func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.Search
 
 func (r *Repository) DeleteItemTag(ctx context.Context, item *entity.Item, tag *entity.Tag) error {
 	err := r.Orm.Db.Model(item).Association("Tags").Delete(tag)
+	return err
+}
+
+func (r *Repository) UpdateItem(ctx context.Context, item *entity.Item) error {
+	err := r.Orm.Db.Updates(item).Error
 	return err
 }

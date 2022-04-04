@@ -96,6 +96,19 @@ definitions:
       name:
         type: string
     type: object
+  rest.UpdateItemRequest:
+    properties:
+      available:
+        type: boolean
+      description:
+        type: string
+      discount:
+        type: number
+      name:
+        type: string
+      price:
+        type: number
+    type: object
 info:
   contact:
     email: contato@coding4u.com.br
@@ -306,12 +319,11 @@ paths:
       summary: find a item
       tags:
       - Item
-  /menus/{menu_id}/items/{item_id}/available:
-    post:
+    patch:
       consumes:
       - application/json
-      description: Router for set available
-      operationId: SetItemAvailable
+      description: Router for update item
+      operationId: updateItem
       parameters:
       - description: Menu ID
         in: path
@@ -323,6 +335,12 @@ paths:
         name: item_id
         required: true
         type: string
+      - description: JSON body for update item
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/rest.UpdateItemRequest'
       produces:
       - application/json
       responses:
@@ -338,7 +356,7 @@ paths:
           description: Forbidden
           schema:
             $ref: '#/definitions/rest.HTTPResponse'
-      summary: set item available
+      summary: update item
       tags:
       - Item
   /menus/{menu_id}/items/{item_id}/tag:
@@ -420,41 +438,6 @@ paths:
           schema:
             $ref: '#/definitions/rest.HTTPResponse'
       summary: add a item tag
-      tags:
-      - Item
-  /menus/{menu_id}/items/{item_id}/unavailable:
-    post:
-      consumes:
-      - application/json
-      description: Router for set unavailable
-      operationId: SetItemUnavailable
-      parameters:
-      - description: Menu ID
-        in: path
-        name: menu_id
-        required: true
-        type: string
-      - description: Item ID
-        in: path
-        name: item_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-      summary: set item unavailable
       tags:
       - Item
 securityDefinitions:

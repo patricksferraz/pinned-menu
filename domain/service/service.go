@@ -162,17 +162,22 @@ func (s *Service) DeleteItemTagByName(ctx context.Context, menuID, itemID, tagNa
 	return nil
 }
 
-func (s *Service) SetItemUnavailable(ctx context.Context, menuID, itemID *string) error {
+func (s *Service) UpdateItem(ctx context.Context, menuID, itemID, name, description *string, available *bool, price, discount *float64) error {
 	item, err := s.Repo.FindItem(ctx, menuID, itemID)
 	if err != nil {
 		return err
 	}
 
-	if err = item.SetUnavailable(); err != nil {
+	if err = item.
+		SetName(name).
+		SetDescription(description).
+		SetAvailable(available).
+		SetPrice(price).
+		SetDiscount(discount).IsValid(); err != nil {
 		return err
 	}
 
-	if err = s.Repo.SaveItem(ctx, item); err != nil {
+	if err = s.Repo.UpdateItem(ctx, item); err != nil {
 		return err
 	}
 
@@ -182,45 +187,12 @@ func (s *Service) SetItemUnavailable(ctx context.Context, menuID, itemID *string
 		return err
 	}
 
-	eMsg, err := event.ToJson(topic.AVAILABLE_MENU_ITEM)
+	eMsg, err := event.ToJson(topic.UPDATE_MENU_ITEM)
 	if err != nil {
 		return err
 	}
 
-	err = s.Repo.PublishEvent(ctx, utils.PString(topic.AVAILABLE_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) SetItemAvailable(ctx context.Context, menuID, itemID *string) error {
-	item, err := s.Repo.FindItem(ctx, menuID, itemID)
-	if err != nil {
-		return err
-	}
-
-	if err = item.SetAvailable(); err != nil {
-		return err
-	}
-
-	if err = s.Repo.SaveItem(ctx, item); err != nil {
-		return err
-	}
-
-	// TODO: adds retry
-	event, err := entity.NewEvent(item)
-	if err != nil {
-		return err
-	}
-
-	eMsg, err := event.ToJson(topic.AVAILABLE_MENU_ITEM)
-	if err != nil {
-		return err
-	}
-
-	err = s.Repo.PublishEvent(ctx, utils.PString(topic.AVAILABLE_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
+	err = s.Repo.PublishEvent(ctx, utils.PString(topic.UPDATE_MENU_ITEM), utils.PString(string(eMsg)), item.ID)
 	if err != nil {
 		return err
 	}

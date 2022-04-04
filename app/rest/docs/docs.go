@@ -327,11 +327,9 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/menus/{menu_id}/items/{item_id}/available": {
-            "post": {
-                "description": "Router for set available",
+            },
+            "patch": {
+                "description": "Router for update item",
                 "consumes": [
                     "application/json"
                 ],
@@ -341,8 +339,8 @@ var doc = `{
                 "tags": [
                     "Item"
                 ],
-                "summary": "set item available",
-                "operationId": "SetItemAvailable",
+                "summary": "update item",
+                "operationId": "updateItem",
                 "parameters": [
                     {
                         "type": "string",
@@ -357,6 +355,15 @@ var doc = `{
                         "name": "item_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "JSON body for update item",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rest.UpdateItemRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -477,58 +484,6 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/rest.DeleteItemTagRequest"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/menus/{menu_id}/items/{item_id}/unavailable": {
-            "post": {
-                "description": "Router for set unavailable",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Item"
-                ],
-                "summary": "set item unavailable",
-                "operationId": "SetItemUnavailable",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Menu ID",
-                        "name": "menu_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Item ID",
-                        "name": "item_id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -701,6 +656,26 @@ var doc = `{
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "rest.UpdateItemRequest": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "boolean"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "discount": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 }
             }
         }

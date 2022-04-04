@@ -29,8 +29,8 @@ func (m *MigrateOrm) load() {
 			Migrate: func(db *gorm.DB) error {
 				type Base struct {
 					ID        string    `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-					CreatedAt time.Time `gorm:"column:created_at;autoUpdateTime"`
-					UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime"`
+					CreatedAt time.Time `gorm:"column:created_at;autoCreateTime"`
+					UpdatedAt time.Time `gorm:"column:updated_at;autoUpdateTime"`
 				}
 				type Menu struct {
 					Base
