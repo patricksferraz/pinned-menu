@@ -99,7 +99,7 @@ func (t *RestService) CreateItem(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
 	}
 
-	itemID, err := t.Service.CreateItem(c.Context(), &menuID, req.Name, req.Description, req.Price, req.Discount)
+	itemID, err := t.Service.CreateItem(c.Context(), &menuID, req.Name, req.Description, req.Price, req.Discount, req.Tags)
 	if err != nil {
 		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
 	}
@@ -141,49 +141,6 @@ func (t *RestService) FindItem(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(item)
-}
-
-// AddItemTag godoc
-// @Summary add a item tag
-// @ID addItemTag
-// @Tags Item
-// @Description Router for add a item tag
-// @Accept json
-// @Produce json
-// @Param menu_id path string true "Menu ID"
-// @Param item_id path string true "Item ID"
-// @Param body body AddItemTagRequest true "JSON body for add a new item tag"
-// @Success 200 {object} HTTPResponse
-// @Failure 400 {object} HTTPResponse
-// @Failure 403 {object} HTTPResponse
-// @Router /menus/{menu_id}/items/{item_id}/tag [post]
-func (t *RestService) AddItemTag(c *fiber.Ctx) error {
-	var req AddItemTagRequest
-
-	menuID := c.Params("menu_id")
-	if !govalidator.IsUUIDv4(menuID) {
-		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
-			Msg: utils.PString("menu_id is not a valid uuid"),
-		})
-	}
-
-	itemID := c.Params("item_id")
-	if !govalidator.IsUUIDv4(itemID) {
-		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
-			Msg: utils.PString("item_id is not a valid uuid"),
-		})
-	}
-
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
-	}
-
-	err := t.Service.AddItemTags(c.Context(), &menuID, &itemID, req.Tag)
-	if err != nil {
-		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: utils.PString("successful request")})
 }
 
 // SearchMenus godoc
@@ -256,49 +213,6 @@ func (t *RestService) SearchItems(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteItemTag godoc
-// @Summary delete a item tag
-// @ID deleteItemTag
-// @Tags Item
-// @Description Router for delete a item tag
-// @Accept json
-// @Produce json
-// @Param menu_id path string true "Menu ID"
-// @Param item_id path string true "Item ID"
-// @Param body body DeleteItemTagRequest true "JSON body for delete a item tag"
-// @Success 200 {object} HTTPResponse
-// @Failure 400 {object} HTTPResponse
-// @Failure 403 {object} HTTPResponse
-// @Router /menus/{menu_id}/items/{item_id}/tag [delete]
-func (t *RestService) DeleteItemTag(c *fiber.Ctx) error {
-	var req DeleteItemTagRequest
-
-	menuID := c.Params("menu_id")
-	if !govalidator.IsUUIDv4(menuID) {
-		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
-			Msg: utils.PString("menu_id is not a valid uuid"),
-		})
-	}
-
-	itemID := c.Params("item_id")
-	if !govalidator.IsUUIDv4(itemID) {
-		return c.Status(fiber.StatusBadRequest).JSON(HTTPResponse{
-			Msg: utils.PString("item_id is not a valid uuid"),
-		})
-	}
-
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
-	}
-
-	err := t.Service.DeleteItemTagByName(c.Context(), &menuID, &itemID, req.Tag)
-	if err != nil {
-		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(HTTPResponse{Msg: utils.PString("successful request")})
-}
-
 // UpdateItem godoc
 // @Summary update item
 // @ID updateItem
@@ -334,7 +248,7 @@ func (t *RestService) UpdateItem(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
 	}
 
-	err := t.Service.UpdateItem(c.Context(), &menuID, &itemID, req.Name, req.Description, req.Available, req.Price, req.Discount)
+	err := t.Service.UpdateItem(c.Context(), &menuID, &itemID, req.Name, req.Description, req.Available, req.Price, req.Discount, req.Tags)
 	if err != nil {
 		return c.Status(fiber.StatusForbidden).JSON(HTTPResponse{Msg: utils.PString(err.Error())})
 	}

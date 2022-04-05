@@ -52,7 +52,7 @@ func (r *Repository) CreateItem(ctx context.Context, item *entity.Item) error {
 func (r *Repository) FindItem(ctx context.Context, menuID, itemID *string) (*entity.Item, error) {
 	var e entity.Item
 
-	r.Orm.Db.Preload("Tags").First(&e, "id = ? AND menu_id = ?", *itemID, *menuID)
+	r.Orm.Db.First(&e, "id = ? AND menu_id = ?", *itemID, *menuID)
 
 	if e.ID == nil {
 		return nil, fmt.Errorf("no item found")
@@ -100,22 +100,10 @@ func (r *Repository) PublishEvent(ctx context.Context, topic, msg, key *string) 
 	return nil
 }
 
-func (r *Repository) FindTagByName(ctx context.Context, tagName *string) (*entity.Tag, error) {
-	var e entity.Tag
-
-	r.Orm.Db.FirstOrCreate(&e, entity.Tag{Name: tagName})
-
-	if e.ID == nil {
-		return nil, fmt.Errorf("no tag found")
-	}
-
-	return &e, nil
-}
-
 func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.SearchItems) ([]*entity.Item, *string, error) {
 	var e []*entity.Item
 
-	q := r.Orm.Db.Preload("Tags")
+	q := r.Orm.Db
 	if searchItems.PageToken != nil {
 		q = q.Where("token < ?", *searchItems.PageToken)
 	}
@@ -131,11 +119,6 @@ func (r *Repository) SearchItems(ctx context.Context, searchItems *entity.Search
 	}
 
 	return e, e[len(e)-1].Token, nil
-}
-
-func (r *Repository) DeleteItemTag(ctx context.Context, item *entity.Item, tag *entity.Tag) error {
-	err := r.Orm.Db.Model(item).Association("Tags").Delete(tag)
-	return err
 }
 
 func (r *Repository) UpdateItem(ctx context.Context, item *entity.Item) error {

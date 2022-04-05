@@ -387,137 +387,9 @@ var doc = `{
                     }
                 }
             }
-        },
-        "/menus/{menu_id}/items/{item_id}/tag": {
-            "post": {
-                "description": "Router for add a item tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Item"
-                ],
-                "summary": "add a item tag",
-                "operationId": "addItemTag",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Menu ID",
-                        "name": "menu_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Item ID",
-                        "name": "item_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "JSON body for add a new item tag",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/rest.AddItemTagRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Router for delete a item tag",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Item"
-                ],
-                "summary": "delete a item tag",
-                "operationId": "deleteItemTag",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Menu ID",
-                        "name": "menu_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Item ID",
-                        "name": "item_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "JSON body for delete a item tag",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/rest.DeleteItemTagRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "$ref": "#/definitions/rest.HTTPResponse"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "rest.AddItemTagRequest": {
-            "type": "object",
-            "properties": {
-                "tag": {
-                    "type": "string"
-                }
-            }
-        },
         "rest.CreateItemRequest": {
             "type": "object",
             "properties": {
@@ -532,6 +404,12 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -539,14 +417,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "rest.DeleteItemTagRequest": {
-            "type": "object",
-            "properties": {
-                "tag": {
                     "type": "string"
                 }
             }
@@ -598,7 +468,7 @@ var doc = `{
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/rest.Tag"
+                        "type": "string"
                     }
                 },
                 "updated_at": {
@@ -651,14 +521,6 @@ var doc = `{
                 }
             }
         },
-        "rest.Tag": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "rest.UpdateItemRequest": {
             "type": "object",
             "properties": {
@@ -676,6 +538,12 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }

@@ -26,26 +26,19 @@ type Menu struct {
 }
 
 type CreateItemRequest struct {
-	Name        *string  `json:"name"`
-	Description *string  `json:"description"`
-	Price       *float64 `json:"price"`
-	Discount    *float64 `json:"discount"`
-}
-
-type Tag struct {
-	Name *string `json:"name"`
+	Name        *string   `json:"name"`
+	Description *string   `json:"description"`
+	Price       *float64  `json:"price"`
+	Discount    *float64  `json:"discount"`
+	Tags        *[]string `json:"tags"`
 }
 
 type Item struct {
 	Base              `json:",inline"`
 	CreateItemRequest `json:",inline"`
-	Code              *int    `json:"code"`
-	MenuID            *string `json:"menu_id"`
-	Tags              []*Tag  `json:"tags"`
-}
-
-type AddItemTagRequest struct {
-	Tag *string `json:"tag"`
+	Code              *int      `json:"code"`
+	MenuID            *string   `json:"menu_id"`
+	Tags              *[]string `json:"tags"`
 }
 
 type SearchMenusRequest struct {
@@ -68,14 +61,11 @@ type SearchItemsResponse struct {
 	NextPageToken *string `json:"next_page_token"`
 }
 
-type DeleteItemTagRequest struct {
-	Tag *string `json:"tag"`
-}
-
 type UpdateItemRequest struct {
-	Name        *string  `json:"name"`
-	Description *string  `json:"description"`
-	Available   *bool    `json:"available"`
-	Price       *float64 `json:"price"`
-	Discount    *float64 `json:"discount"`
+	Name        *string   `json:"name"`
+	Description *string   `json:"description"`
+	Available   *bool     `json:"available"`
+	Price       *float64  `json:"price"`
+	Discount    *float64  `json:"discount"`
+	Tags        *[]string `json:"tags"`
 }

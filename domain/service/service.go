@@ -41,13 +41,13 @@ func (s *Service) FindMenu(ctx context.Context, menuID *string) (*entity.Menu, e
 	return menu, nil
 }
 
-func (s *Service) CreateItem(ctx context.Context, menuID, name, description *string, price, discount *float64) (*string, error) {
+func (s *Service) CreateItem(ctx context.Context, menuID, name, description *string, price, discount *float64, tags *[]string) (*string, error) {
 	menu, err := s.Repo.FindMenu(ctx, menuID)
 	if err != nil {
 		return nil, err
 	}
 
-	item, err := entity.NewItem(name, description, price, discount, menu)
+	item, err := entity.NewItem(name, description, price, discount, tags, menu)
 	if err != nil {
 		return nil, err
 	}
@@ -82,28 +82,6 @@ func (s *Service) FindItem(ctx context.Context, menuID, itemID *string) (*entity
 	}
 
 	return item, nil
-}
-
-func (s *Service) AddItemTags(ctx context.Context, menuID, itemID, tagName *string) error {
-	item, err := s.Repo.FindItem(ctx, menuID, itemID)
-	if err != nil {
-		return err
-	}
-
-	tag, err := s.Repo.FindTagByName(ctx, tagName)
-	if err != nil {
-		return err
-	}
-
-	if err = item.AddTags(tag); err != nil {
-		return err
-	}
-
-	if err = s.Repo.SaveItem(ctx, item); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (s *Service) SearchMenus(ctx context.Context, pageToken *string, pageSize *int) ([]*entity.Menu, *string, error) {
@@ -144,25 +122,7 @@ func (s *Service) SearchItems(ctx context.Context, menuID, pageToken *string, pa
 	return items, nextPageToken, nil
 }
 
-func (s *Service) DeleteItemTagByName(ctx context.Context, menuID, itemID, tagName *string) error {
-	item, err := s.Repo.FindItem(ctx, menuID, itemID)
-	if err != nil {
-		return err
-	}
-
-	tag, err := s.Repo.FindTagByName(ctx, tagName)
-	if err != nil {
-		return err
-	}
-
-	if err = s.Repo.DeleteItemTag(ctx, item, tag); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Service) UpdateItem(ctx context.Context, menuID, itemID, name, description *string, available *bool, price, discount *float64) error {
+func (s *Service) UpdateItem(ctx context.Context, menuID, itemID, name, description *string, available *bool, price, discount *float64, tags *[]string) error {
 	item, err := s.Repo.FindItem(ctx, menuID, itemID)
 	if err != nil {
 		return err
@@ -173,7 +133,8 @@ func (s *Service) UpdateItem(ctx context.Context, menuID, itemID, name, descript
 		SetDescription(description).
 		SetAvailable(available).
 		SetPrice(price).
-		SetDiscount(discount).IsValid(); err != nil {
+		SetDiscount(discount).
+		SetTags(tags).IsValid(); err != nil {
 		return err
 	}
 

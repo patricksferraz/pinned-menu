@@ -5,6 +5,7 @@ import (
 
 	"github.com/asaskevich/govalidator"
 	"github.com/c-4u/pinned-menu/utils"
+	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -16,19 +17,19 @@ func init() {
 
 type Item struct {
 	Base        `json:",inline" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" valid:"-"`
-	Code        *int     `json:"code,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:code;autoIncrement;not null" valid:"-"`
-	Name        *string  `json:"name,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:name;not null" valid:"required"`
-	Description *string  `json:"description,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:description;type:varchar(500)" valid:"-"`
-	Available   *bool    `json:"available" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:available;not null" valid:"-"`
-	Price       *float64 `json:"price,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:price;not null" valid:"required"`
-	Discount    *float64 `json:"discount,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:discount" valid:"-"`
-	Token       *string  `json:"-" gorm:"column:token;type:varchar(25);not null" valid:"-"`
-	MenuID      *string  `json:"menu_id" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
-	Menu        *Menu    `json:"-" valid:"-"`
-	Tags        []*Tag   `json:"tags,omitempty" gorm:"many2many:items_tags" valid:"-"`
+	Code        *int            `json:"code,omitempty" groups:"NEW_MENU_ITEM" gorm:"column:code;autoIncrement;not null" valid:"-"`
+	Name        *string         `json:"name,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:name;not null" valid:"required"`
+	Description *string         `json:"description,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:description;type:varchar(500)" valid:"-"`
+	Available   *bool           `json:"available" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:available;not null" valid:"-"`
+	Price       *float64        `json:"price,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:price;not null" valid:"required"`
+	Discount    *float64        `json:"discount,omitempty" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:discount" valid:"-"`
+	Tags        *pq.StringArray `json:"tags" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:tags;type:text[]" valid:"-"`
+	Token       *string         `json:"-" gorm:"column:token;type:varchar(25);not null" valid:"-"`
+	MenuID      *string         `json:"menu_id" groups:"NEW_MENU_ITEM,UPDATE_MENU_ITEM" gorm:"column:menu_id;type:uuid;not null" valid:"uuid"`
+	Menu        *Menu           `json:"-" valid:"-"`
 }
 
-func NewItem(name, description *string, price, discount *float64, menu *Menu) (*Item, error) {
+func NewItem(name, description *string, price, discount *float64, tags *[]string, menu *Menu) (*Item, error) {
 	token := primitive.NewObjectID().Hex()
 	e := Item{
 		Name:        name,
@@ -36,6 +37,7 @@ func NewItem(name, description *string, price, discount *float64, menu *Menu) (*
 		Discount:    discount,
 		Description: description,
 		Available:   utils.PBool(true),
+		Tags:        (*pq.StringArray)(tags),
 		Token:       &token,
 		MenuID:      menu.ID,
 		Menu:        menu,
@@ -56,11 +58,10 @@ func (e *Item) IsValid() error {
 	return err
 }
 
-func (e *Item) AddTags(tag ...*Tag) error {
-	e.Tags = append(e.Tags, tag...)
+func (e *Item) SetTags(tags *[]string) *Item {
+	e.Tags = (*pq.StringArray)(tags)
 	e.UpdatedAt = utils.PTime(time.Now())
-	err := e.IsValid()
-	return err
+	return e
 }
 
 func (e *Item) SetAvailable(available *bool) *Item {

@@ -18,8 +18,5 @@ type RepoInterface interface {
 	SearchItems(ctx context.Context, searchItems *entity.SearchItems) ([]*entity.Item, *string, error)
 	UpdateItem(ctx context.Context, item *entity.Item) error
 
-	FindTagByName(ctx context.Context, tagName *string) (*entity.Tag, error)
-	DeleteItemTag(ctx context.Context, item *entity.Item, tag *entity.Tag) error
-
 	PublishEvent(ctx context.Context, topic, msg, key *string) error
 }

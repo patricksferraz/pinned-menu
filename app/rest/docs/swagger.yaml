@@ -1,10 +1,5 @@
 basePath: /api/v1
 definitions:
-  rest.AddItemTagRequest:
-    properties:
-      tag:
-        type: string
-    type: object
   rest.CreateItemRequest:
     properties:
       description:
@@ -15,15 +10,14 @@ definitions:
         type: string
       price:
         type: number
+      tags:
+        items:
+          type: string
+        type: array
     type: object
   rest.CreateMenuRequest:
     properties:
       name:
-        type: string
-    type: object
-  rest.DeleteItemTagRequest:
-    properties:
-      tag:
         type: string
     type: object
   rest.HTTPResponse:
@@ -57,7 +51,7 @@ definitions:
         type: number
       tags:
         items:
-          $ref: '#/definitions/rest.Tag'
+          type: string
         type: array
       updated_at:
         type: string
@@ -91,11 +85,6 @@ definitions:
       next_page_token:
         type: string
     type: object
-  rest.Tag:
-    properties:
-      name:
-        type: string
-    type: object
   rest.UpdateItemRequest:
     properties:
       available:
@@ -108,6 +97,10 @@ definitions:
         type: string
       price:
         type: number
+      tags:
+        items:
+          type: string
+        type: array
     type: object
 info:
   contact:
@@ -357,87 +350,6 @@ paths:
           schema:
             $ref: '#/definitions/rest.HTTPResponse'
       summary: update item
-      tags:
-      - Item
-  /menus/{menu_id}/items/{item_id}/tag:
-    delete:
-      consumes:
-      - application/json
-      description: Router for delete a item tag
-      operationId: deleteItemTag
-      parameters:
-      - description: Menu ID
-        in: path
-        name: menu_id
-        required: true
-        type: string
-      - description: Item ID
-        in: path
-        name: item_id
-        required: true
-        type: string
-      - description: JSON body for delete a item tag
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/rest.DeleteItemTagRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-      summary: delete a item tag
-      tags:
-      - Item
-    post:
-      consumes:
-      - application/json
-      description: Router for add a item tag
-      operationId: addItemTag
-      parameters:
-      - description: Menu ID
-        in: path
-        name: menu_id
-        required: true
-        type: string
-      - description: Item ID
-        in: path
-        name: item_id
-        required: true
-        type: string
-      - description: JSON body for add a new item tag
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/rest.AddItemTagRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/rest.HTTPResponse'
-      summary: add a item tag
       tags:
       - Item
 securityDefinitions:
