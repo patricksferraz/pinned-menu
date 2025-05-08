@@ -1,193 +1,115 @@
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** github_username, repo_name, twitter_handle, email, project_title, project_description
--->
+# Pinned Menu 🚀
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
+[![Go Report Card](https://goreportcard.com/badge/github.com/patricksferraz/pinned-menu)](https://goreportcard.com/report/github.com/patricksferraz/pinned-menu)
+[![GoDoc](https://godoc.org/github.com/patricksferraz/pinned-menu?status.svg)](https://godoc.org/github.com/patricksferraz/pinned-menu)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://github.com/c-4u/pinned-menu">
-    <img src="img/logo.png" alt="Logo" width="100" height="100">
-  </a>
+A modern, high-performance menu management system built with Go, featuring a robust API and scalable architecture.
 
-  <h3 align="center">Menu</h3>
+## ✨ Features
 
-  <p align="center">
-    Microservice for time recording
-    <br />
-    <a href="https://github.com/c-4u/pinned-menu"><strong>Explore the docs »</strong></a>
-    <!-- <br />
-    <br />
-    <a href="https://github.com/c-4u/pinned-menu">View Demo</a>
-    ·
-    <a href="https://github.com/c-4u/pinned-menu">Report Bug</a>
-    ·
-    <a href="https://github.com/c-4u/pinned-menu">Request Feature</a>-->
-  </p>
-</p>
+- 🚀 High-performance API built with Fiber
+- 📊 PostgreSQL and SQLite database support
+- 🔄 Real-time updates with Kafka integration
+- 📝 Swagger API documentation
+- 🐳 Docker and Kubernetes support
+- 🔐 Environment-based configuration
+- 🧪 Comprehensive testing suite
 
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <!-- <li><a href="#usage">Usage</a></li> -->
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <!-- <li><a href="#license">License</a></li> -->
-    <li><a href="#contact">Contact</a></li>
-    <!-- <li><a href="#acknowledgements">Acknowledgements</a></li> -->
-  </ol>
-</details>
+## 🛠️ Tech Stack
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+- **Backend**: Go 1.18+
+- **Web Framework**: Fiber v2
+- **Database**: PostgreSQL, SQLite
+- **ORM**: GORM
+- **Message Broker**: Kafka
+- **Container**: Docker
+- **Orchestration**: Kubernetes
+- **Documentation**: Swagger
+- **Testing**: Go testing framework
 
-Menu is a microservice for pinned soluction providing in the application layer the communication by REST and gRPC.
-
-<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
-<!--
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo_name`, `twitter_handle`, `email`, `project_title`, `project_description` -->
-
-### Built With
-
-- [Go Lang](https://golang.org/)
-- List all: `go list -m all`
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Hiring a kubernetes cluster:
-  - [AWS](https://aws.amazon.com/pt/eks/?whats-new-cards.sort-by=item.additionalFields.postDateTime&whats-new-cards.sort-order=desc&eks-blogs.sort-by=item.additionalFields.createdDate&eks-blogs.sort-order=desc)
-  - [Azure](https://azure.microsoft.com/pt-br/services/kubernetes-service/)
-  - [GCP](https://cloud.google.com/kubernetes-engine)
+- Go 1.18 or higher
+- Docker and Docker Compose
+- PostgreSQL (optional, SQLite is available for development)
+- Kafka (optional, for real-time features)
 
-- [Kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+### Installation
 
-- Create a secrets: see "_k8s/instructions.md_"
+1. Clone the repository:
+```bash
+git clone https://github.com/patricksferraz/pinned-menu.git
+cd pinned-menu
+```
 
-### Deploy
+2. Copy the environment file and configure it:
+```bash
+cp .env.example .env
+```
 
-- `kubectl apply -f ./k8s`
+3. Install dependencies:
+```bash
+go mod download
+```
 
-<!-- USAGE EXAMPLES -->
-<!-- ## Usage
+4. Run the application:
+```bash
+make run
+```
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Docker Deployment
 
-_For more examples, please refer to the [Documentation](https://example.com)_ -->
+```bash
+docker-compose up -d
+```
 
-<!-- ROADMAP -->
-## Roadmap
+## 📚 API Documentation
 
-See the [open issues](https://github.com/c-4u/pinned-menu/issues) for a list of proposed features (and known issues).
+Once the application is running, you can access the Swagger documentation at:
+```
+http://localhost:8080/swagger/
+```
 
-<!-- CONTRIBUTING -->
-## Contributing
+## 🏗️ Project Structure
 
-Any contributions you make are **greatly appreciated**.
+```
+.
+├── app/          # Application layer
+├── cmd/          # Command line interface
+├── domain/       # Domain models and interfaces
+├── infra/        # Infrastructure implementations
+├── k8s/          # Kubernetes configurations
+└── utils/        # Utility functions
+```
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-**Prerequisites**:
+## 📝 License
 
-- Golang
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-  ```sh
-  wget https://golang.org/dl/go1.17.7.linux-amd64.tar.gz
-  rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
-  export PATH=$PATH:/usr/local/go/bin
-  ```
+## 👥 Authors
 
-- Docker and docker-compose
+- Patrick Ferraz - Initial work - [GitHub](https://github.com/patricksferraz)
 
-  ```sh
-  sudo apt-get install docker docker-compose docker.io -y
-  ```
+## 🙏 Acknowledgments
 
-- Environment: see "_.env.example_"
+- [Fiber](https://github.com/gofiber/fiber)
+- [GORM](https://github.com/go-gorm/gorm)
+- [Swagger](https://github.com/swaggo/swag)
+- And all other amazing open-source projects that made this possible!
 
-**Installation**:
+---
 
-1. Clone the repo
-
-   ```sh
-   git clone https://github.com/c-4u/pinned-menu.git
-   ```
-
-2. Run
-
-   ```sh
-   make up
-   ```
-
-3. Test
-
-   ```sh
-   make gtest
-   ```
-
-**Installation in local kubernetes**:
-
-1. Install [k3d](https://k3d.io/), [Kind](https://kind.sigs.k8s.io/) or similar
-2. Install [Kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) and [Helm](https://helm.sh/)
-3. Follow the steps of [Getting Started](#getting-started)
-    - Connect to cluster and run:
-
-      `kubectl apply -f k8s/`
-<!-- LICENSE -->
-<!-- ## License -->
-
-<!-- Distributed under the MIT License. See `LICENSE` for more information. -->
-
-<!-- CONTACT -->
-## Contact
-
-Coding4u - contato@coding4u.com.br - [website](http://coding4u.com.br)
-
-Project Link: [menu](https://github.com/c-4u/pinned-menu)
-
-<!-- ACKNOWLEDGEMENTS -->
-<!-- ## Acknowledgements
-
-* []()
-* []()
-* []() -->
+⭐️ If you like this project, please give it a star on GitHub!

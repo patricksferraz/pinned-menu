@@ -1,4 +1,4 @@
-module github.com/c-4u/pinned-menu
+module github.com/patricksferraz/pinned-menu
 
 go 1.18
 

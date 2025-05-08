@@ -1,36 +1,146 @@
-# Instructions k8s
+# Kubernetes Deployment Instructions 🚀
 
-## Create secrets
+This document provides detailed instructions for deploying the Pinned Menu application to Kubernetes.
 
-Fill in the _.env_ file in _k8s/.env_ using _.env.example_, and run:
+## 📋 Prerequisites
 
-```sh
-kubectl create secret generic menu-secret --from-env-file k8s/.env
-```
+- Kubernetes cluster up and running
+- `kubectl` configured and connected to your cluster
+- Docker registry access (if using private images)
+- Basic understanding of Kubernetes concepts
 
-## Create a secret for docker registry
+## 🔐 Secrets Management
 
-Run:
+### 1. Application Secrets
 
-```sh
+1. Create a `.env` file in the `k8s` directory using the provided `.env.example` as a template:
+   ```bash
+   cp .env.example k8s/.env
+   ```
+
+2. Fill in all required environment variables in `k8s/.env`
+
+3. Create the Kubernetes secret:
+   ```bash
+   kubectl create secret generic menu-secret --from-env-file k8s/.env
+   ```
+
+### 2. Docker Registry Secret
+
+If you're using a private Docker registry, create a registry secret:
+
+```bash
 kubectl create secret docker-registry regsecret \
---docker-server=$DOCKER_REGISTRY_SERVER \
---docker-username=$DOCKER_USER \
---docker-password=$DOCKER_PASSWORD \
---docker-email=$DOCKER_EMAIL
+  --docker-server=$DOCKER_REGISTRY_SERVER \
+  --docker-username=$DOCKER_USER \
+  --docker-password=$DOCKER_PASSWORD \
+  --docker-email=$DOCKER_EMAIL
 ```
 
-Where:
+Required variables:
+- `$DOCKER_REGISTRY_SERVER`: Docker registry URL (e.g., docker.io, gcr.io)
+- `$DOCKER_USER`: Registry username
+- `$DOCKER_PASSWORD`: Registry password
+- `$DOCKER_EMAIL`: (Optional) Email address
 
-- $DOCKER_REGISTRY_SERVER: is the url for the registry
-- $DOCKER_USER: is the registry user
-- $DOCKER_PASSWORD: is the registry password
-- $DOCKER_EMAIL: is optional, any e-mail
+## 🚀 Deployment
 
-## Deploy all
+### 1. Deploy All Resources
 
-Run:
-
-```sh
+To deploy all Kubernetes resources at once:
+```bash
 kubectl apply -f ./k8s
 ```
+
+### 2. Verify Deployment
+
+Check the status of your deployments:
+```bash
+# Check pods
+kubectl get pods
+
+# Check services
+kubectl get services
+
+# Check deployments
+kubectl get deployments
+```
+
+### 3. Access the Application
+
+After deployment, you can access the application through the configured service:
+```bash
+# Get the service URL
+kubectl get service pinned-menu-service
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Pods not starting**
+   ```bash
+   # Check pod logs
+   kubectl logs <pod-name>
+
+   # Describe pod for more details
+   kubectl describe pod <pod-name>
+   ```
+
+2. **Secrets not found**
+   ```bash
+   # Verify secrets exist
+   kubectl get secrets
+
+   # Check secret details
+   kubectl describe secret menu-secret
+   ```
+
+3. **Image pull errors**
+   ```bash
+   # Check if registry secret is properly configured
+   kubectl get secret regsecret --output=yaml
+   ```
+
+## 🔄 Maintenance
+
+### Updating the Deployment
+
+1. Update your application code
+2. Build and push new Docker image
+3. Update the image tag in deployment files
+4. Apply changes:
+   ```bash
+   kubectl apply -f ./k8s
+   ```
+
+### Scaling
+
+To scale your application:
+```bash
+# Scale deployment
+kubectl scale deployment pinned-menu --replicas=3
+```
+
+## 🧹 Cleanup
+
+To remove all deployed resources:
+```bash
+kubectl delete -f ./k8s
+```
+
+To remove secrets:
+```bash
+kubectl delete secret menu-secret
+kubectl delete secret regsecret
+```
+
+## 📚 Additional Resources
+
+- [Kubernetes Documentation](https://kubernetes.io/docs/)
+- [Kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+- [Kubernetes Best Practices](https://kubernetes.io/docs/concepts/configuration/overview/)
+
+---
+
+Remember to always backup your data and configurations before making significant changes! 🔒

@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: menu
-        image: ghcr.io/c-4u/pinned-menu
+        image: ghcr.io/patricksferraz/pinned-menu
         imagePullPolicy: IfNotPresent
         ports:
         - name: rest

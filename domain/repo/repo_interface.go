@@ -3,7 +3,7 @@ package repo
 import (
 	"context"
 
-	"github.com/c-4u/pinned-menu/domain/entity"
+	"github.com/patricksferraz/pinned-menu/domain/entity"
 )
 
 type RepoInterface interface {
